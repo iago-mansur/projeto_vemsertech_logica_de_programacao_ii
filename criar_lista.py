@@ -2,18 +2,18 @@ import json
 
 base = [
     {
-        'nome': 'Restaurante1',
-        'prato': 'Prato1',
+        'nome': 'restaurante1',
+        'prato': 'prato1',
         'preco': 11.11
     },
     {
-        'nome': 'Restaurante2',
-        'prato': 'Prato2',
+        'nome': 'restaurante2',
+        'prato': 'prato2',
         'preco': 22.22
     },
     {
-        'nome': 'Restaurante3',
-        'prato': 'Prato3',
+        'nome': 'restaurante3',
+        'prato': 'prato3',
         'preco': 33.33
     }
 ]
