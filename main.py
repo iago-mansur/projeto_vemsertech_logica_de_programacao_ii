@@ -11,7 +11,8 @@ def visualizar_dados():
 
 def exibir_restaurante():
     
-    print(procurar_restaurante())
+    obs = procurar_restaurante()
+    print(obs)
 
 
 def atualizar_restaurante():
@@ -43,7 +44,23 @@ def atualizar_restaurante():
 
 
 def adicionar_restaurante():
-    pass
+    
+    """
+    data_add = input("Dados a serem adiconados:")
+    print(data_add)    
+    print(type(data_add))
+    """
+
+    data_dict = {'nome':'restaurante100', 'prato':'prato100', 'valor': 100}
+    print(data_dict)
+
+    base = ler_dados()
+
+    base.append(data_dict)
+
+    print (base)
+
+    gravar_dados(base)
 """
 lambda
 return map(gravar_dados, ('a', 'b', 'c')) 
@@ -110,8 +127,10 @@ def ler_dados():
     return base
 
 
-def gravar_dados():
-    pass
+def gravar_dados(base):
+
+    with open("base.json", encoding="utf-8", mode="w") as arq:
+        arq.write(json.dumps(base))
 
 
 def procurar_restaurante():
