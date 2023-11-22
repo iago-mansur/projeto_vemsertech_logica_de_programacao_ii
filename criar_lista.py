@@ -18,7 +18,5 @@ base = [
     }
 ]
 
-string_json = json.dumps(base)
-
 with open("base.json", encoding="utf-8", mode="w") as arq:
     arq.write(json.dumps(base))

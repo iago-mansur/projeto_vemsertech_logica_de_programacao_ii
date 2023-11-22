@@ -45,26 +45,20 @@ def atualizar_restaurante():
 
 def adicionar_restaurante():
     
-    """
-    data_add = input("Dados a serem adiconados:")
-    print(data_add)    
-    print(type(data_add))
-    """
+    nome = input("Digite o nome do restaurante:").lower()
 
-    data_dict = {'nome':'restaurante100', 'prato':'prato100', 'valor': 100}
-    print(data_dict)
+    prato = input("Digite o prato do restaurante").lower()
 
+    valor = float(input("Digite o valor:"))
+
+    dados_add = {'nome': nome, 'prato': prato, 'valor': valor}
+    
     base = ler_dados()
 
-    base.append(data_dict)
-
-    print (base)
+    base.append(dados_add)
 
     gravar_dados(base)
-"""
-lambda
-return map(gravar_dados, ('a', 'b', 'c')) 
-"""
+    
 
 def remover_restaurante():
     
