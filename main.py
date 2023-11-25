@@ -1,109 +1,61 @@
 import json
 
+def visualizar_dados(base):
 
+    for restaurante in base:
+        print("-----------------------------")
+        print("nome:", restaurante["nome"])
+        print("prato:", restaurante["prato"])
+        print("preco:", restaurante["preco"])
+        print("-----------------------------")
 
-def visualizar_dados():
-  
-  base = ler_dados()
-
-  print ("Os dados atuais são: " + str(base))
-
-
-def exibir_restaurante():
+def exibir_restaurante(base):
     
-    obs = procurar_restaurante()
-    print(obs)
+    dados = input("Informe o restaurante:").lower()            
 
+    return list(filter(lambda i: i['nome'].lower() == dados, base))
 
-def atualizar_restaurante():
+def atualizar_restaurante(base):
     
-    x = procurar_restaurante()
+    i = indice_restaurante(base)
+    dados_atual = dados_novos()
 
-    print(x)
+    base[i] = dados_atual
     
-    dados = dict(input("Dados do dicionario atualizado:"))
-    print(dados)
-    """
-    print(nome)
-    print(type(nome))
-    prato = input("Prato atualizado:")
-    print(prato)
-    print(type(prato))
-    valor = float(input("valor atualizado:"))
-    print(valor)
-    print(type(valor))
-    dados = dict(zip(nome, prato, valor))
-    print(dados)       
-    """
+    gravar_dados_json(base)
 
-    #base = ler_dados()
-
-    #base.update(dados)
-
-    #gravar_dados(dados)
-
-
-def adicionar_restaurante():
+def adicionar_restaurante(base):
     
-    nome = input("Digite o nome do restaurante:").lower()
-
-    prato = input("Digite o prato do restaurante").lower()
-
-    valor = float(input("Digite o valor:"))
-
-    dados_add = {'nome': nome, 'prato': prato, 'valor': valor}
-    
-    base = ler_dados()
-
+    dados_add = dados_novos()
     base.append(dados_add)
+    gravar_dados_json(base)
 
-    gravar_dados(base)
+def remover_restaurante(base):
     
+    i = indice_restaurante(base)
+    base.pop(i)
 
-def remover_restaurante():
+def indice_restaurante(base):
     
-    base = ler_dados()
+    print("Nomes dos restuarntes: ", list(map(lambda b: b["nome"] , base)))
+    
+    return int(input("Informe o indice do retaurante: "))
 
-    dados = procurar_restaurante()
+def dados_novos():
+    
+    nome = input("Digite o nome do restaurante: ").lower()
 
-    base_atualizada = [i for i in base if i['nome'] != dados["nome"]]
-    
-    print(base_atualizada)
+    prato = input("Digite o prato do restaurante: ").lower()
 
-    """
-    dados = input("Informe o restaurante:").lower()
+    preco = float(input("Digite o preço: "))
     
-    base = ler_dados()             
-    
-   
-    return   list(filter(lambda i: i['nome'].lower() != dados, base))
-    """
-    """   
-    def remover_lista(x):
-        return filter(lambda i: i['nome'] not in x['nome'], y)
-    removedor = remover_lista(dados)
-    list(map(removedor,base))
-    """
-    
-    """
-    base = ler_dados()
+    dados_novos = {
+        'nome': nome,
+        'prato': prato,
+        'preco': preco
+    }
 
-    dados = procurar_restaurante()
-    
-    base_atual = [i for n, i in enumerate(base) if i not in dados.itens()]
-    
-
-    print(base_atual)
-    """
-    """
-    gravar_dados(base_atual)
-    
-    visualizar_dados()
-
-    def filtro_dados(x):
-        for dados in 
-        x["name"] = dados["dados"]
-"""
+    return dados_novos
 
 def ler_dados():
     
@@ -121,19 +73,36 @@ def ler_dados():
     return base
 
 
-def gravar_dados(base):
+def gravar_dados_json(base):
 
-    with open("base.json", encoding="utf-8", mode="w") as arq:
-        arq.write(json.dumps(base))
-
-
-def procurar_restaurante():
-
-    dados = input("Informe o restaurante:").lower()
+    try:
+        
+        with open("base.json", encoding="utf-8", mode="w") as arq:
+            arq.write(json.dumps(base))
     
-    base = ler_dados()             
+    except:
+
+        print('Erro!')
+
+
+def gravar_dados_csv(base):
+
+    try:
+        
+        with open("base.csv", encoding="utf-8", mode="w") as arq:
+
+            cont = 0        
+
+            for restaurante in base:
+                print(restaurante)
+                if cont == 0:
+                    arq.write("nome, prato, preco \n")
+                    cont += 1
+                arq.write(f"{restaurante['nome']}, {restaurante['prato']}, {restaurante['peco']},\n")
     
-    return list(filter(lambda i: i['nome'].lower() == dados, base)) 
+    except:
+
+        print('Erro!')
 
 def menu():
     
@@ -152,6 +121,8 @@ def menu():
 
     [5] - Remover restaurante
 
+    [6] - Exportar dados em csv
+
     --------------------
     '''
     
@@ -160,6 +131,7 @@ def menu():
 
 def main():
 
+    base = ler_dados()
     controle_main = True
 
     while controle_main:
@@ -167,19 +139,28 @@ def main():
         opcao = menu()
         
         if opcao == '1':
-            visualizar_dados()
-
+            print("Segue a lista atualizada de restaurantes:\n")
+            visualizar_dados(base)
+            
         elif opcao == '2':
-            exibir_restaurante()
-        
+            print("Nome dos restaurantes:\n", list(map(lambda b: b["nome"], base)))
+            lista_dados_selecionados = list(map(exibir_restaurante, base))
+            print(type(lista_dados_selecionados))
+            print("Dados do restaurante selecionado:\n") 
+            visualizar_dados(lista_dados_selecionados)
+            #("Dados do restaurante selecionado:\n", list(map(exibir_restaurante, base)))
+
         elif opcao == '3':
-            atualizar_restaurante()
+            atualizar_restaurante(base)
 
         elif opcao == '4':
-            adicionar_restaurante()
+            adicionar_restaurante(base)
         
         elif opcao == '5':
-            remover_restaurante()
+            remover_restaurante(base)
+        
+        elif opcao == '6':
+            gravar_dados_csv(base)
         
         elif opcao == '0':
             print('App Encerrado.')

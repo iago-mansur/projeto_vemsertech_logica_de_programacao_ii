@@ -1,1 +1,1 @@
-[{"nome": "restaurante1", "prato": "prato1", "preco": 11.11}, {"nome": "restaurante2", "prato": "prato2", "preco": 22.22}, {"nome": "restaurante3", "prato": "prato3", "preco": 33.33}, {"nome": "restaurante100", "prato": "prato100", "valor": 100}, {"nome": "rest1", "prato": "p1", "valor": 22.0}]
+[{"nome": "restaurante1", "prato": "prato1", "preco": 11.11}, {"nome": "rest1", "prato": "p1", "preco": 11.0}, {"nome": "restaurante3", "prato": "prato3", "preco": 33.33}, {"nome": "restaurante4", "prato": "prato4", "preco": 44.44}]
