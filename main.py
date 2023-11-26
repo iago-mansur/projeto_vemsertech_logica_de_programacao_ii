@@ -1,4 +1,5 @@
 import json
+from functools import reduce
 
 def visualizar_dados(base):
 
@@ -9,11 +10,15 @@ def visualizar_dados(base):
         print("preco:", restaurante["preco"])
         print("-----------------------------")
 
-def exibir_restaurante(base):
-    
-    dados = input("Informe o restaurante:").lower()            
+def dados_unico_restaurante(base):
+        
+        print("Nome dos restaurantes:\n", list(map(lambda b: b["nome"], base)))
+        
+        dados_unico = input("Informe o restaurante:").lower()
 
-    return list(filter(lambda i: i['nome'].lower() == dados, base))
+        lista_filtro = filtrar_restaurante(base, dados_unico)
+        
+        print("Dados do restaurante selecionado:\n", lista_filtro)
 
 def atualizar_restaurante(base):
     
@@ -34,6 +39,20 @@ def remover_restaurante(base):
     
     i = indice_restaurante(base)
     base.pop(i)
+    gravar_dados_json(base)
+
+def listar_estatisticas(base):
+    
+    media = valor_medio_prato(base)
+    mini = getMinMax(base)
+    maxi = getMinMax(base, get_min = False)
+    gravar_dados_csv(media, mini, maxi)
+    
+    print(f"O preço médio é {media: .2f}, os dados do prato de menor valor são: {mini}, e os dados do prato de maior valor são: {maxi}")
+
+def filtrar_restaurante(base, dados):           
+
+    return list(filter(lambda i: i['nome'].lower() == dados, base))
 
 def indice_restaurante(base):
     
@@ -56,6 +75,46 @@ def dados_novos():
     }
 
     return dados_novos
+
+def valor_medio_prato(base):
+    
+    total_pratos = len(base)
+    preco_medio = reduce(lambda soma, b: soma + b["preco"], base, 0)/total_pratos
+    
+    return preco_medio
+
+def getMinMax(base= [], get_min= True):
+  
+  try:
+    
+    num_min_max = base[0]["preco"]
+    lista_min_max = [(base[0]["prato"], base[0]["preco"])]
+    
+    for i in range(1, len(base)):
+      
+      if get_min:
+        
+        if base[i]["preco"] < num_min_max:
+          num_min_max = base[i]["preco"]
+          lista_min_max = [(base[i]["prato"], base[i]["preco"])]
+
+        elif num_min_max == base[i]["preco"]:
+            lista_min_max.append((base[i]["prato"], base[i]["preco"]))
+      
+      else:
+        
+        if base[i]["preco"]  > num_min_max:
+          num_min_max = base[i]["preco"]
+          lista_min_max = [(base[i]["prato"], base[i]["preco"])]
+        
+        elif num_min_max == base[i]["preco"]:
+            lista_min_max.append((base[i]["prato"], base[i]["preco"]))
+
+    return lista_min_max
+  
+  except IndexError:
+    
+    return "Lista vazia!"
 
 def ler_dados():
     
@@ -85,21 +144,13 @@ def gravar_dados_json(base):
         print('Erro!')
 
 
-def gravar_dados_csv(base):
+def gravar_dados_csv(media, mini, maxi):
 
     try:
         
-        with open("base.csv", encoding="utf-8", mode="w") as arq:
+        with open("estatisticas.csv", encoding="utf-8", mode="w") as arq:
+            arq.write(f"{media}, {mini}, {maxi},\n")
 
-            cont = 0        
-
-            for restaurante in base:
-                print(restaurante)
-                if cont == 0:
-                    arq.write("nome, prato, preco \n")
-                    cont += 1
-                arq.write(f"{restaurante['nome']}, {restaurante['prato']}, {restaurante['peco']},\n")
-    
     except:
 
         print('Erro!')
@@ -113,7 +164,7 @@ def menu():
 
     [1] - Visualizar Dados
 
-    [2] - Exibir Restaurante
+    [2] - Exibir Restaurante selecionado
 
     [3] - Atualizar Restaurante
 
@@ -121,7 +172,7 @@ def menu():
 
     [5] - Remover restaurante
 
-    [6] - Exportar dados em csv
+    [6] - Estatísticas dos restaurantes
 
     --------------------
     '''
@@ -143,12 +194,7 @@ def main():
             visualizar_dados(base)
             
         elif opcao == '2':
-            print("Nome dos restaurantes:\n", list(map(lambda b: b["nome"], base)))
-            lista_dados_selecionados = list(map(exibir_restaurante, base))
-            print(type(lista_dados_selecionados))
-            print("Dados do restaurante selecionado:\n") 
-            visualizar_dados(lista_dados_selecionados)
-            #("Dados do restaurante selecionado:\n", list(map(exibir_restaurante, base)))
+            dados_unico_restaurante(base)
 
         elif opcao == '3':
             atualizar_restaurante(base)
@@ -158,9 +204,9 @@ def main():
         
         elif opcao == '5':
             remover_restaurante(base)
-        
+
         elif opcao == '6':
-            gravar_dados_csv(base)
+            listar_estatisticas(base)
         
         elif opcao == '0':
             print('App Encerrado.')
